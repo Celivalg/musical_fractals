@@ -16,14 +16,6 @@ float sphere_dist(vec3 point)
     sphere_radius *= (repetition / 2);
     return distance(mod(point, repetition), sphere_pos) - sphere_radius;
 }
-
-float GetDist(vec3 p)
-{
-    vec4 s = vec4(1, 1, 1, 0.25); //Sphere. xyz is position w is radius
-    float sphereDist = length(mod(p, 2) - s.xyz) - s.w;
-    return sphereDist;
-}
-
  
 float ray_march(vec3 point, vec3 direction) 
 {

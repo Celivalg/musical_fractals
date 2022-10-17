@@ -44,7 +44,13 @@ GLuint create_program(const char *vertex_file, const char *fragment_file) {
 
     glAttachShader(program, vertex_shader);
     glAttachShader(program, fragment_shader);
-
+    // TODO bind color output to index 0, default back buffer behavior is to
+    // grab color from index 0 if I understand corretly, and while FragColor is
+    // not bound as 0 here, it still gets attributed 0 since it's the only
+    // output, however, it's undefined behavior as far as OpenGL defined.
+    // In theory something like glBindFragDataLocation(program, 0, "FragColor");
+    // should work, maybe, need to read more man pages
+    // Or I can perhaps just hardcode it into the glsl code...
     glLinkProgram(program);
 
     GLint status;

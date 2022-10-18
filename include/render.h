@@ -13,7 +13,8 @@ struct gl_context_data {
     GLuint VAO;
     GLuint program;
     GLint u_resolution_pos;
-    GLint u_camera_pos;
+    GLint u_camera_origin_pos;
+    GLint u_camera_rotation_q_pos;
 };
 
 // Inits the GtkGlArea and sets the render and initialize handlers.

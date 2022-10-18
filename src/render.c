@@ -22,6 +22,8 @@ static gboolean render(__attribute__((unused)) GtkGLArea *area,
         glUniform2f(data->u_resolution_pos,
                     (float)gdk_surface_get_width(surface),
                     (float)gdk_surface_get_height(surface));
+        glUniform3f(data->u_camera_origin_pos, 0.0, 0.0, 0.0);
+        glUniform4f(data->u_camera_rotation_q_pos, 0.0, 0.0, 0.0, 1.0);
         // glUniform1f(u_time_pos, 2.0f);
 
         glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -67,6 +69,10 @@ static void on_realize(GtkGLArea *area, struct gl_context_data *data) {
     // u_time_pos = glGetUniformLocation(program, "u_time");
     data->u_resolution_pos =
         glGetUniformLocation(data->program, "u_resolution");
+    data->u_camera_origin_pos =
+        glGetUniformLocation(data->program, "u_camera_origin");
+    data->u_camera_rotation_q_pos =
+        glGetUniformLocation(data->program, "u_camera_rotation_q");
 }
 
 GtkWidget *setup_glarea(struct gl_context_data *data) {

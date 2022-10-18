@@ -1,6 +1,11 @@
 #version 460
 
-uniform vec2 u_resolution;  // Width and height of the shader
+// Width and height of the shader
+uniform vec2 u_resolution;  
+// Camera pos in xyz
+uniform vec3 u_camera_origin;
+// Camera rotation as a quaternion
+uniform vec4 u_camera_rotation_q;
 out vec4 frag_color;
 // maybe needs a layout (location = 0)  
 
@@ -33,11 +38,21 @@ vec3 ray_march(vec3 point, vec3 direction)
     }
     
     if (ray_step == MAX_STEPS || origin_distance > MAX_DIST)
-        return vec3(0.);
+        return vec3(0., 0., 0.);
 
 
     return vec3(1. - (ray_step / float(MAX_STEPS)));
 
+}
+
+vec4 quat_mul(vec4 a, vec4 b){
+    mat4 m;// Width and height of the shader
+    vec4 v = a.wxyz;
+    m[0] = b.wxyz;
+    m[1] = vec4(-b.x, b.w, b.z, -b.y);
+    m[2] = vec4(-b.y, -b.z, b.w, b.x);
+    m[3] = vec4(-b.z, b.y, -b.x, b.w);
+    return vec4(m * v).yzwx;
 }
  
 void main()
@@ -49,16 +64,19 @@ void main()
     // but the math is cleaner this way so I'll keep it like that
     vec2 screen_coordinates =   ((gl_FragCoord.xy / u_resolution.x) 
                                 - (u_resolution / (u_resolution.x * 2))) * 2;
-    vec3 origin = vec3(0, 0, 0); // aka Camera position
-    vec3 ray_direction = normalize(vec3(screen_coordinates.x, screen_coordinates.y, 1.0));
-
-    frag_color = vec4(ray_march(origin, ray_direction), 1.0);
-    /*
-    if (dist > MAX_DIST) {
-            frag_color = vec4(0, 0, 0, 1.0);
-            return;
-    }
-
-    vec3 color = vec3(dist / 100.);
-    frag_color = vec4(color.x, color.y, color.z, 1.0); */
+    
+    // Calculates in which direction the ray should go
+    vec3 ray_direction_pre_camera = 
+        normalize(vec3(screen_coordinates.x, screen_coordinates.y, 1.0));
+    
+    // Rotates the ray direction to take into account the camera angle
+    vec4 ray_direction_q = 
+        quat_mul(
+                quat_mul(   u_camera_rotation_q,
+                            vec4(ray_direction_pre_camera, 0.)
+                        ), 
+                vec4(-u_camera_rotation_q.xyz, u_camera_rotation_q.w)
+                );
+    
+    frag_color = vec4(ray_march(u_camera_origin, ray_direction_q.xyz), 1.0);
 }

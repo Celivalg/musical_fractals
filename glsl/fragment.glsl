@@ -70,6 +70,7 @@ void main()
         normalize(vec3(screen_coordinates.x, screen_coordinates.y, 1.0));
     
     // Rotates the ray direction to take into account the camera angle
+    // r = q * p * q^(-1)
     vec4 ray_direction_q = 
         quat_mul(
                 quat_mul(   u_camera_rotation_q,

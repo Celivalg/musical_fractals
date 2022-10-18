@@ -16,12 +16,13 @@ static gboolean render(__attribute__((unused)) GtkGLArea *area,
 
     // draw your object
     if (data->program != 0 && data->VAO != 0) {
-        GdkSurface *surface = gdk_gl_context_get_surface(context);
         glUseProgram(data->program);
         glBindVertexArray(data->VAO);
         glUniform2f(data->u_resolution_pos,
-                    (float)gdk_surface_get_width(surface),
-                    (float)gdk_surface_get_height(surface));
+                    (float)gtk_widget_get_width(GTK_WIDGET(area)),
+                    (float)gtk_widget_get_height(GTK_WIDGET(area)));
+        //(float)gdk_surface_get_width(surface),
+        //(float)gdk_surface_get_height(surface));
         glUniform3f(data->u_camera_origin_pos, 0.0, 0.0, 0.0);
         glUniform4f(data->u_camera_rotation_q_pos, 0.0, 0.0, 0.0, 1.0);
         // glUniform1f(u_time_pos, 2.0f);

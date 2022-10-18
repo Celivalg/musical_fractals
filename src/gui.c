@@ -1,4 +1,5 @@
 #include "gui.h"
+#include "context.h"
 #include "render.h"
 
 void create_window(GApplication *app) {
@@ -10,10 +11,10 @@ void create_window(GApplication *app) {
     gtk_window_set_default_size(GTK_WINDOW(win), 400, 300);
 
     // Allocating memory for data on position of GlContext data
-    struct gl_context_data *data = malloc(sizeof(struct gl_context_data *));
+    struct context *context = init_context();
 
     GtkWidget *hpaned = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
-    GtkWidget *glarea = setup_glarea(data);
+    GtkWidget *glarea = setup_glarea(context);
     GtkWidget *frame2 = gtk_frame_new(NULL);
 
     gtk_widget_set_size_request(hpaned, 200, -1);

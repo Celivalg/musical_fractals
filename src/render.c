@@ -2,9 +2,9 @@
 #include "gl_create_program.h"
 #include "gl_init_buffers.h"
 
-static gboolean render(__attribute__((unused)) GtkGLArea *area,
-                       __attribute__((unused)) GdkGLContext *context,
-                       struct gl_context_data *data) {
+static gboolean render(GtkGLArea *area,
+                       __attribute__((unused)) GdkGLContext *GLcontext,
+                       struct context *context) {
     // inside this function it's safe to use GL; the given
     // GdkGLContext has been made current to the drawable
     // surface used by the `GtkGLArea` and the viewport has
@@ -13,21 +13,24 @@ static gboolean render(__attribute__((unused)) GtkGLArea *area,
     // we can start by clearing the buffer
     glClearColor(0.5, 0.5, 0.5, 1);
     glClear(GL_COLOR_BUFFER_BIT);
-
     // draw your object
-    if (data->program != 0 && data->VAO != 0) {
-        glUseProgram(data->program);
-        glBindVertexArray(data->VAO);
-        glUniform2f(data->u_resolution_pos,
+    if (context->gl_context->program != 0 && context->gl_context->VAO != 0) {
+
+        glUseProgram(context->gl_context->program);
+        glBindVertexArray(context->gl_context->VAO);
+
+        glUniform2f(context->gl_context->u_resolution_pos,
                     (float)gtk_widget_get_width(GTK_WIDGET(area)),
                     (float)gtk_widget_get_height(GTK_WIDGET(area)));
-        //(float)gdk_surface_get_width(surface),
-        //(float)gdk_surface_get_height(surface));
-        glUniform3f(data->u_camera_origin_pos, 0.0, 0.0, 0.0);
-        glUniform4f(data->u_camera_rotation_q_pos, 0.0, 0.0, 0.0, 1.0);
-        // glUniform1f(u_time_pos, 2.0f);
+
+        glUniform3fv(context->gl_context->u_camera_origin_pos, 1,
+                     context->camera->camera_origin);
+
+        glUniform4fv(context->gl_context->u_camera_rotation_q_pos, 1,
+                     context->camera->camera_rotation_q);
 
         glDrawArrays(GL_TRIANGLES, 0, 6);
+
     } else {
         printf("failed somewhere");
     }
@@ -38,7 +41,7 @@ static gboolean render(__attribute__((unused)) GtkGLArea *area,
     return TRUE;
 }
 
-static void on_realize(GtkGLArea *area, struct gl_context_data *data) {
+static void on_realize(GtkGLArea *area, struct context *context) {
 
     gtk_gl_area_make_current(area);
 
@@ -53,34 +56,35 @@ static void on_realize(GtkGLArea *area, struct gl_context_data *data) {
         return;
     }
 
-    data->VAO = setup_vao();
-    if (data->VAO == 0) {
+    context->gl_context->VAO = setup_vao();
+    if (context->gl_context->VAO == 0) {
         printf("on_realize: Failed to setup VAO\n");
         return;
     }
 
-    data->program =
+    context->gl_context->program =
         create_program("./glsl/vertex.glsl", "./glsl/fragment.glsl");
-    if (data->program == 0) {
+    if (context->gl_context->program == 0) {
         printf("on_realize: Failed to create program\n");
         return;
     }
-    glUseProgram(data->program);
+    glUseProgram(context->gl_context->program);
 
-    // u_time_pos = glGetUniformLocation(program, "u_time");
-    data->u_resolution_pos =
-        glGetUniformLocation(data->program, "u_resolution");
-    data->u_camera_origin_pos =
-        glGetUniformLocation(data->program, "u_camera_origin");
-    data->u_camera_rotation_q_pos =
-        glGetUniformLocation(data->program, "u_camera_rotation_q");
+    context->gl_context->u_resolution_pos =
+        glGetUniformLocation(context->gl_context->program, "u_resolution");
+    context->gl_context->u_camera_origin_pos =
+        glGetUniformLocation(context->gl_context->program, "u_camera_origin");
+    context->gl_context->u_camera_rotation_q_pos = glGetUniformLocation(
+        context->gl_context->program, "u_camera_rotation_q");
 }
 
-GtkWidget *setup_glarea(struct gl_context_data *data) {
+GtkWidget *setup_glarea(struct context *context) {
     GtkWidget *gl_area = gtk_gl_area_new();
 
-    g_signal_connect(gl_area, "render", G_CALLBACK(render), data);
-    g_signal_connect(gl_area, "realize", G_CALLBACK(on_realize), data);
+    g_signal_connect(gl_area, "render", G_CALLBACK(render), context);
+    g_signal_connect(gl_area, "realize", G_CALLBACK(on_realize), context);
+
+    gtk_gl_area_set_auto_render(GTK_GL_AREA(gl_area), true);
     return gl_area;
 }
 

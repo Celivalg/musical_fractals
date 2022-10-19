@@ -75,14 +75,15 @@ void calc_camera_velocity(struct camera_data *camera, float interval) {
     float accel = 1.0;
 
     float vel_comp[3];
-    vel_comp[0] =
+    vel_comp[0] = accel * interval *
+                  (((int)camera->pressed[d_forward]) -
+                   ((int)camera->pressed[d_backward]));
+    vel_comp[1] =
         accel * interval *
-        (((int)camera->pressed[forward]) - ((int)camera->pressed[backward]));
-    vel_comp[1] = accel * interval *
-                  (((int)camera->pressed[up]) - ((int)camera->pressed[down]));
+        (((int)camera->pressed[d_up]) - ((int)camera->pressed[d_down]));
     vel_comp[2] =
         accel * interval *
-        (((int)camera->pressed[right]) - ((int)camera->pressed[left]));
+        (((int)camera->pressed[d_right]) - ((int)camera->pressed[d_left]));
     orient_vel(camera, vel_comp);
 
     camera->camera_vel[0] +=
@@ -95,7 +96,7 @@ void calc_camera_velocity(struct camera_data *camera, float interval) {
     float l = sqrtf(camera->camera_vel[1] * camera->camera_vel[0] +
                     camera->camera_vel[1] * camera->camera_vel[1] +
                     camera->camera_vel[2] * camera->camera_vel[2]);
-    if (l != 0) {
+    if (l > 1) {
         camera->camera_vel[0] /= l;
         camera->camera_vel[1] /= l;
         camera->camera_vel[2] /= l;
@@ -103,7 +104,9 @@ void calc_camera_velocity(struct camera_data *camera, float interval) {
 }
 
 void calc_camera_position(struct camera_data *camera, float interval) {
-    // TODO
+    camera->camera_origin[0] += camera->camera_vel[0] * interval;
+    camera->camera_origin[1] += camera->camera_vel[1] * interval;
+    camera->camera_origin[2] += camera->camera_vel[2] * interval;
 }
 
 void calc_camera(struct context *context) {

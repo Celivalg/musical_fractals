@@ -6,12 +6,12 @@
 #include <sys/time.h>
 
 enum direction {
-    forward = 0,
-    backward = 1,
-    up = 2,
-    down = 3,
-    left = 4,
-    right = 5
+    d_forward = 0,
+    d_backward = 1,
+    d_up = 2,
+    d_down = 3,
+    d_left = 4,
+    d_right = 5
 };
 
 struct gl_context_data {

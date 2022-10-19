@@ -1,4 +1,5 @@
 #include "render.h"
+#include "camera.h"
 #include "gl_create_program.h"
 #include "gl_init_buffers.h"
 
@@ -9,7 +10,7 @@ static gboolean render(GtkGLArea *area,
     // GdkGLContext has been made current to the drawable
     // surface used by the `GtkGLArea` and the viewport has
     // already been set to be the size of the allocation
-
+    calc_camera(context);
     // we can start by clearing the buffer
     glClearColor(0.5, 0.5, 0.5, 1);
     glClear(GL_COLOR_BUFFER_BIT);

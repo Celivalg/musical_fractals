@@ -1,10 +1,10 @@
 CC=gcc
-CFLAGS= -Iinclude -Wall -Wextra -Wshadow -Wformat=2 -Wformat-overflow -Wformat-truncation=2 -Wundef -fno-common -Wconversion -std=c99 -O2 -g
+CFLAGS= -Iinclude -Wall -Wextra -Wshadow -Wformat=2 -Wformat-overflow -Wformat-truncation=2 -Wundef -fno-common -Wconversion -std=c17 -O2 -g
 CPPFLAGS= -MMD
 GTKCFLAGS= `pkg-config --cflags gtk4`
 GTKLIBS= `pkg-config --libs gtk4`
 GLLIBS = `pkg-config --libs glew`
-LDFLAGS= $(GTKLIBS)  $(GLLIBS)
+LDFLAGS= $(GTKLIBS)  $(GLLIBS) -lm
 
 
 OBJDIR = ./obj

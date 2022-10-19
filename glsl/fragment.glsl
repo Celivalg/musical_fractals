@@ -46,7 +46,7 @@ vec3 ray_march(vec3 point, vec3 direction)
 }
 
 vec4 quat_mul(vec4 a, vec4 b){
-    mat4 m;// Width and height of the shader
+    mat4 m;
     vec4 v = a.wxyz;
     m[0] = b.wxyz;
     m[1] = vec4(-b.x, b.w, b.z, -b.y);

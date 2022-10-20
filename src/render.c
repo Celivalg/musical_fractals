@@ -3,6 +3,10 @@
 #include "gl_create_program.h"
 #include "gl_init_buffers.h"
 
+static void force_redraw(GtkGLArea *area) {
+    gtk_widget_queue_draw(GTK_WIDGET(area));
+}
+
 static gboolean render(GtkGLArea *area,
                        __attribute__((unused)) GdkGLContext *GLcontext,
                        struct context *context) {
@@ -39,6 +43,7 @@ static gboolean render(GtkGLArea *area,
     // we completed our drawing; the draw commands will be
     // flushed at the end of the signal emission chain, and
     // the buffers will be drawn on the window
+    g_timeout_add(1000 / 60, G_SOURCE_FUNC(force_redraw), area);
     return TRUE;
 }
 
@@ -84,6 +89,7 @@ GtkWidget *setup_glarea(struct context *context) {
 
     g_signal_connect(gl_area, "render", G_CALLBACK(render), context);
     g_signal_connect(gl_area, "realize", G_CALLBACK(on_realize), context);
+    g_timeout_add(1000 / 60, G_SOURCE_FUNC(force_redraw), gl_area);
 
     gtk_gl_area_set_auto_render(GTK_GL_AREA(gl_area), true);
     return gl_area;

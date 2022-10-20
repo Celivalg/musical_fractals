@@ -114,5 +114,6 @@ void calc_camera(struct context *context) {
     calc_camera_rotation(context->camera);
     calc_camera_velocity(context->camera, interval);
     calc_camera_position(context->camera, interval);
+    context->camera->camera_vel[0] = 1.0f;
 }
 

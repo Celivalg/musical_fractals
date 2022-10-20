@@ -2,6 +2,7 @@
 #define CONTEXT_H
 
 #include <GL/glew.h>
+#include <gtk/gtk.h>
 #include <stdbool.h>
 #include <sys/time.h>
 
@@ -22,6 +23,11 @@ struct gl_context_data {
     GLint u_camera_rotation_q_pos;
 };
 
+struct gtk_context_data {
+    bool pointer_grabbed;
+    GtkWidget *win;
+};
+
 struct camera_data {
     GLfloat camera_origin[3];
     GLfloat camera_rotation_q[4];
@@ -39,6 +45,7 @@ struct camera_data {
 struct context {
     struct gl_context_data *gl_context;
     struct camera_data *camera;
+    struct gtk_context_data *gtk_context;
 };
 
 void free_context(struct context *context);

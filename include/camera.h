@@ -4,7 +4,7 @@
 #include "context.h"
 #include <GL/glew.h>
 
-void key_press(struct context *context, enum direction dir, bool pressed);
+void key_forward(struct context *context, enum direction dir, bool pressed);
 
 void calc_camera(struct context *context);
 

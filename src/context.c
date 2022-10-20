@@ -7,6 +7,9 @@ void free_context(struct context *context) {
         if (context->gl_context != NULL) {
             if (context->camera != NULL) {
                 free(context->camera);
+                if (context->gtk_context != NULL) {
+                    free(context->gtk_context);
+                }
             }
             free(context->gl_context);
         }
@@ -65,5 +68,16 @@ struct context *init_context() {
 
     context->camera->camera_rotation_pitch = 0.0;
     context->camera->camera_rotation_yaw = 0.0;
+
+    context->gtk_context = malloc(sizeof(struct gtk_context_data));
+    if (context->gtk_context == NULL) {
+        printf(
+            "init_context: Failed to allocate context->gtk_context memory\n");
+        free_context(context);
+        return NULL;
+    }
+    context->gtk_context->win = NULL;
+    context->gtk_context->pointer_grabbed = false;
+
     return context;
 }

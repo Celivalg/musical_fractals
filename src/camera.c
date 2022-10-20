@@ -17,9 +17,9 @@ float to_rads(float angle) { return M_PI * angle; }
 
 void quat_mul(float *a, float *b, float *c) {
     c[0] = (a[3] * b[0]) + (a[0] * b[3]) - (a[1] * b[2]) + (a[2] * b[1]);
-    c[0] = (a[3] * b[1]) + (a[0] * b[2]) + (a[1] * b[3]) - (a[2] * b[0]);
-    c[0] = (a[3] * b[2]) - (a[0] * b[1]) + (a[1] * b[0]) + (a[2] * b[3]);
-    c[0] = (a[3] * b[3]) - (a[0] * b[0]) - (a[1] * b[1]) - (a[2] * b[2]);
+    c[1] = (a[3] * b[1]) + (a[0] * b[2]) + (a[1] * b[3]) - (a[2] * b[0]);
+    c[2] = (a[3] * b[2]) - (a[0] * b[1]) + (a[1] * b[0]) + (a[2] * b[3]);
+    c[3] = (a[3] * b[3]) - (a[0] * b[0]) - (a[1] * b[1]) - (a[2] * b[2]);
 }
 
 void quat_rot(float *quat_a, float *quat_p) {
@@ -72,34 +72,36 @@ float get_interval(struct camera_data *camera) {
 }
 
 void calc_camera_velocity(struct camera_data *camera, float interval) {
-    float accel = 1.0;
+    float accel = 3.0f;
+    float decel = 1.f;
+    float max_speed = 5.0f;
 
     float vel_comp[3];
-    vel_comp[0] = accel * interval *
+    vel_comp[2] = accel * interval *
                   (((int)camera->pressed[d_forward]) -
                    ((int)camera->pressed[d_backward]));
     vel_comp[1] =
         accel * interval *
         (((int)camera->pressed[d_up]) - ((int)camera->pressed[d_down]));
-    vel_comp[2] =
+    vel_comp[0] =
         accel * interval *
         (((int)camera->pressed[d_right]) - ((int)camera->pressed[d_left]));
     orient_vel(camera, vel_comp);
 
     camera->camera_vel[0] +=
-        vel_comp[0] - camera->camera_vel[0] * 0.1f * interval;
+        vel_comp[0] - camera->camera_vel[0] * decel * interval;
     camera->camera_vel[1] +=
-        vel_comp[1] - camera->camera_vel[1] * 0.1f * interval;
+        vel_comp[1] - camera->camera_vel[1] * decel * interval;
     camera->camera_vel[2] +=
-        vel_comp[2] - camera->camera_vel[2] * 0.1f * interval;
+        vel_comp[2] - camera->camera_vel[2] * decel * interval;
 
-    float l = sqrtf(camera->camera_vel[1] * camera->camera_vel[0] +
+    float l = sqrtf(camera->camera_vel[0] * camera->camera_vel[0] +
                     camera->camera_vel[1] * camera->camera_vel[1] +
                     camera->camera_vel[2] * camera->camera_vel[2]);
-    if (l > 1) {
-        camera->camera_vel[0] /= l;
-        camera->camera_vel[1] /= l;
-        camera->camera_vel[2] /= l;
+    if (l > max_speed) {
+        camera->camera_vel[0] *= max_speed / l;
+        camera->camera_vel[1] *= max_speed / l;
+        camera->camera_vel[2] *= max_speed / l;
     }
 }
 
@@ -114,6 +116,5 @@ void calc_camera(struct context *context) {
     calc_camera_rotation(context->camera);
     calc_camera_velocity(context->camera, interval);
     calc_camera_position(context->camera, interval);
-    context->camera->camera_vel[0] = 1.0f;
 }
 

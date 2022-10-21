@@ -21,6 +21,10 @@ float sphere_dist(vec3 point)
     sphere_radius *= (repetition / 2);
     return distance(mod(point, repetition), sphere_pos) - sphere_radius;
 }
+
+float dist(vec3 point){
+    return sphere_dist(point);
+}
  
 vec3 ray_march(vec3 point, vec3 direction) 
 {
@@ -28,7 +32,7 @@ vec3 ray_march(vec3 point, vec3 direction)
     int ray_step = 0;
     for(; ray_step < MAX_STEPS; ray_step++)
     {
-        float surface_distance = sphere_dist(point);
+        float surface_distance = dist(point);
         origin_distance += surface_distance;
         point += direction * surface_distance;
 

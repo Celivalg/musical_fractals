@@ -10,28 +10,40 @@ gboolean key_pressed_handler(__attribute__((unused)) GtkEventController *self,
     switch (keyval) {
     case 'Z':
     case 'z':
-        key_forward(context, d_forward, true);
+        if (context->gtk_context->pointer_grabbed)
+            key_forward(context, d_forward, true);
         break;
     case 'S':
     case 's':
-        key_forward(context, d_backward, true);
+        if (context->gtk_context->pointer_grabbed)
+            key_forward(context, d_backward, true);
         break;
     case 'D':
     case 'd':
-        key_forward(context, d_right, true);
+        if (context->gtk_context->pointer_grabbed)
+            key_forward(context, d_right, true);
         break;
     case 'Q':
     case 'q':
-        key_forward(context, d_left, true);
+        if (context->gtk_context->pointer_grabbed)
+            key_forward(context, d_left, true);
         break;
     case 32: // space
-        key_forward(context, d_up, true);
+        if (context->gtk_context->pointer_grabbed)
+            key_forward(context, d_up, true);
         break;
     case 65505: // shift
-        key_forward(context, d_down, true);
+        if (context->gtk_context->pointer_grabbed)
+            key_forward(context, d_down, true);
         break;
     case 65307: // escape
         if (context->gtk_context->pointer_grabbed) {
+            key_forward(context, d_down, false);
+            key_forward(context, d_up, false);
+            key_forward(context, d_right, false);
+            key_forward(context, d_left, false);
+            key_forward(context, d_forward, false);
+            key_forward(context, d_backward, false);
             ungrab_mouse(context);
         } else {
             grab_mouse(context);

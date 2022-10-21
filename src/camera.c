@@ -5,6 +5,8 @@
 #define M_PI 3.14159265358979323846f
 #endif
 
+// This is getting quite ugly
+
 void mouse_to_angle(struct context *context, float x, float y) {
     float sensitivity = 1.0f;
     float revolution = 4000.0f;
@@ -20,7 +22,12 @@ void mouse_to_angle(struct context *context, float x, float y) {
         new_pitch = -0.5f;
     // TODO do something about the yaw being left to climb to infinity,
     // the cos/sin or the remained isn't precise enough to not cause a jump in
-    // angle new_yaw = (float)remainder(new_yaw, 2.0f);
+    // angle (in float at least, tbh I dunno why I am still using floats and not
+    // doubles here, it's cpu land, it should be fine to use doubles), although
+    // to be fair, you would have to spin quite long to cause the angle too get
+    // high enough to get precision issues
+    //
+    // new_yaw = (float)remainder(new_yaw, 2.0f);
 
     context->camera->camera_rotation_pitch = new_pitch;
     context->camera->camera_rotation_yaw = new_yaw;

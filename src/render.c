@@ -130,15 +130,14 @@ static void on_realize(GtkGLArea *area, struct context *context) {
         context->gl_context->program, "u_camera_rotation_q");
 }
 
-GtkWidget *setup_glarea(struct context *context) {
-    GtkWidget *gl_area = gtk_gl_area_new();
-    context->gtk_context->area = GTK_GL_AREA(gl_area);
+void setup_glarea(struct context *context) {
+    // GtkWidget *gl_area = gtk_gl_area_new();
+    // context->gtk_context->area = GTK_GL_AREA(gl_area);
 
-    g_signal_connect(gl_area, "render", G_CALLBACK(render), context);
-    g_signal_connect(gl_area, "realize", G_CALLBACK(on_realize), context);
+    g_signal_connect(context->gtk_context->area, "render", G_CALLBACK(render),
+                     context);
+    g_signal_connect(context->gtk_context->area, "realize",
+                     G_CALLBACK(on_realize), context);
     g_timeout_add(1000 / 60, G_SOURCE_FUNC(force_redraw), context);
-
-    gtk_gl_area_set_auto_render(GTK_GL_AREA(gl_area), true);
-    return gl_area;
 }
 

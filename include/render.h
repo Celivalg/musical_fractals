@@ -11,6 +11,6 @@
 // free it in the end as the application would stop anyway, or even if the
 // GLArea would need to be reinitialized, the 'context' can be reused, tho a lot
 // of thing would probably end up staying in memory... might need a TODO here
-GtkWidget *setup_glarea(struct context *context);
+void setup_glarea(struct context *context);
 
 #endif

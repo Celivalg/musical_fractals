@@ -6,7 +6,7 @@
 
 void create_window(GApplication *app) {
 
-    GtkWidget *win;
+    /*GtkWidget *win;
     win = gtk_application_window_new(GTK_APPLICATION(app));
 
     gtk_window_set_title(GTK_WINDOW(win), "Fractal Viewer");
@@ -36,7 +36,27 @@ void create_window(GApplication *app) {
     gtk_paned_set_shrink_end_child(GTK_PANED(hpaned), FALSE);
     gtk_widget_set_size_request(frame2, 50, -1);
 
-    gtk_window_set_child(GTK_WINDOW(win), hpaned);
+    gtk_window_set_child(GTK_WINDOW(win), hpaned);*/
 
-    gtk_widget_show(win);
+    GtkBuilder *builder = gtk_builder_new_from_file("./ui/musical_fractals.ui");
+    GtkWidget *win = GTK_WIDGET(gtk_builder_get_object(builder, "top_window"));
+    if (!win) {
+        printf("Failed to get window\n");
+        exit(1);
+    }
+    gtk_window_set_application(GTK_WINDOW(win), GTK_APPLICATION(app));
+
+    // Allocating memory for data on position of GlContext data
+    struct context *context = init_context();
+    context->gtk_context->win = GTK_WIDGET(win);
+    GtkEventController *k_controller = new_event_controller(context);
+    GtkEventController *m_controller = mouse_event_controller(context);
+    gtk_widget_add_controller(GTK_WIDGET(win), k_controller);
+    gtk_widget_add_controller(GTK_WIDGET(win), m_controller);
+
+    GtkWidget *gl_area = GTK_WIDGET(gtk_builder_get_object(builder, "gl_area"));
+    context->gtk_context->area = GTK_GL_AREA(gl_area);
+    setup_glarea(context);
+
+    gtk_widget_show(GTK_WIDGET(win));
 }

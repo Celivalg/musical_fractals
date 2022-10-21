@@ -21,10 +21,12 @@ struct gl_context_data {
     GLint u_resolution_pos;
     GLint u_camera_origin_pos;
     GLint u_camera_rotation_q_pos;
+    struct timeval last_update;
 };
 
 struct gtk_context_data {
     bool pointer_grabbed;
+    GtkGLArea *area;
     GtkWidget *win;
 };
 

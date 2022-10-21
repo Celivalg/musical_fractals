@@ -49,9 +49,12 @@ vec4 quat_mul(vec4 a, vec4 b){
     mat4 m;
     vec4 v = a.wxyz;
     m[0] = b.wxyz;
-    m[1] = vec4(-b.x, b.w, b.z, -b.y);
-    m[2] = vec4(-b.y, -b.z, b.w, b.x);
-    m[3] = vec4(-b.z, b.y, -b.x, b.w);
+    m[1] = vec4(-b.x, b.w, -b.z, b.y);
+    m[2] = vec4(-b.y, b.z, b.w, -b.x);
+    m[3] = vec4(-b.z, -b.y, b.x, b.w);
+    //m[1] = vec4(-b.x, b.w, b.z, -b.y);
+    //m[2] = vec4(-b.y, -b.z, b.w, b.x);
+    //m[3] = vec4(-b.z, b.y, -b.x, b.w);
     return vec4(m * v).yzwx;
 }
  

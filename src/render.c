@@ -2,18 +2,46 @@
 #include "camera.h"
 #include "gl_create_program.h"
 #include "gl_init_buffers.h"
+#include "mouse_input.h"
+#include <stdlib.h>
+/*
+ *this doesn't work
+static float fps = 0.0f;
 
-static void force_redraw(GtkGLArea *area) {
-    gtk_widget_queue_draw(GTK_WIDGET(area));
+void calculate_fps(struct context *context) {
+    struct timeval time;
+    gettimeofday(&time, NULL);
+    long inter_s = time.tv_sec - context->gl_context->last_update.tv_sec;
+    if (inter_s < 0)
+        inter_s = 0;
+
+    long inter_ms =
+        (time.tv_usec - context->gl_context->last_update.tv_usec) / 1000;
+    if (inter_ms < 0)
+        inter_ms = 0;
+
+    long ms = inter_ms + 1000 * inter_s;
+    if (ms <= 0)
+        ms = 1;
+    fps = fps + ((1000.0f / (float)ms) / 60.0f) - (fps / 60.0f);
+    printf("%f\n", fps);
+}*/
+
+static void force_redraw(struct context *context) {
+    // calculate_fps(context);
+    gettimeofday(&(context->gl_context->last_update), NULL);
+    gtk_widget_queue_draw(GTK_WIDGET(context->gtk_context->area));
 }
 
 static gboolean render(GtkGLArea *area,
                        __attribute__((unused)) GdkGLContext *GLcontext,
                        struct context *context) {
+    gettimeofday(&(context->gl_context->last_update), NULL);
     // inside this function it's safe to use GL; the given
     // GdkGLContext has been made current to the drawable
     // surface used by the `GtkGLArea` and the viewport has
     // already been set to be the size of the allocation
+
     calc_camera(context);
     // we can start by clearing the buffer
     glClearColor(0.5, 0.5, 0.5, 1);
@@ -43,7 +71,25 @@ static gboolean render(GtkGLArea *area,
     // we completed our drawing; the draw commands will be
     // flushed at the end of the signal emission chain, and
     // the buffers will be drawn on the window
-    g_timeout_add(1000 / 60, G_SOURCE_FUNC(force_redraw), area);
+    struct timeval time;
+    gettimeofday(&time, NULL);
+    long inter_s = time.tv_sec - context->gl_context->last_update.tv_sec;
+    if (inter_s < 0)
+        inter_s = 0;
+
+    long inter_ms =
+        (time.tv_usec - context->gl_context->last_update.tv_usec) / 1000;
+    if (inter_ms < 0)
+        inter_ms = 0;
+
+    long ms = (1000 / 60) - inter_ms;
+
+    if (inter_s >= 1 || ms < 0) {
+        g_timeout_add(1, G_SOURCE_FUNC(force_redraw), context);
+    } else {
+        g_timeout_add((unsigned int)ms, G_SOURCE_FUNC(force_redraw), context);
+    }
+
     return TRUE;
 }
 
@@ -86,10 +132,11 @@ static void on_realize(GtkGLArea *area, struct context *context) {
 
 GtkWidget *setup_glarea(struct context *context) {
     GtkWidget *gl_area = gtk_gl_area_new();
+    context->gtk_context->area = GTK_GL_AREA(gl_area);
 
     g_signal_connect(gl_area, "render", G_CALLBACK(render), context);
     g_signal_connect(gl_area, "realize", G_CALLBACK(on_realize), context);
-    g_timeout_add(1000 / 60, G_SOURCE_FUNC(force_redraw), gl_area);
+    g_timeout_add(1000 / 60, G_SOURCE_FUNC(force_redraw), context);
 
     gtk_gl_area_set_auto_render(GTK_GL_AREA(gl_area), true);
     return gl_area;

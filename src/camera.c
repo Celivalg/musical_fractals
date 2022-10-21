@@ -1,8 +1,32 @@
 #include "camera.h"
 #include <math.h>
+#include <stdio.h>
 #ifndef M_PI
 #define M_PI 3.14159265358979323846f
 #endif
+
+void mouse_to_angle(struct context *context, float x, float y) {
+    float sensitivity = 1.0f;
+    float revolution = 4000.0f;
+
+    float new_pitch =
+        (y * sensitivity) / revolution + context->camera->camera_rotation_pitch;
+    float new_yaw =
+        (x * sensitivity) / revolution + context->camera->camera_rotation_yaw;
+
+    if (new_pitch > 0.5f)
+        new_pitch = 0.5f;
+    if (new_pitch < -0.5f)
+        new_pitch = -0.5f;
+    // TODO do something about the yaw being left to climb to infinity,
+    // the cos/sin or the remained isn't precise enough to not cause a jump in
+    // angle new_yaw = (float)remainder(new_yaw, 2.0f);
+
+    context->camera->camera_rotation_pitch = new_pitch;
+    context->camera->camera_rotation_yaw = new_yaw;
+
+    // printf("yaw:%f pitch:%f\n", new_yaw, new_pitch);
+}
 
 void key_forward(struct context *context, enum direction dir, bool pressed) {
     calc_camera(context);
@@ -16,10 +40,17 @@ void key_forward(struct context *context, enum direction dir, bool pressed) {
 float to_rads(float angle) { return M_PI * angle; }
 
 void quat_mul(float *a, float *b, float *c) {
-    c[0] = (a[3] * b[0]) + (a[0] * b[3]) - (a[1] * b[2]) + (a[2] * b[1]);
-    c[1] = (a[3] * b[1]) + (a[0] * b[2]) + (a[1] * b[3]) - (a[2] * b[0]);
-    c[2] = (a[3] * b[2]) - (a[0] * b[1]) + (a[1] * b[0]) + (a[2] * b[3]);
+    c[0] = (a[3] * b[0]) + (a[0] * b[3]) + (a[1] * b[2]) - (a[2] * b[1]);
+    c[1] = (a[3] * b[1]) - (a[0] * b[2]) + (a[1] * b[3]) + (a[2] * b[0]);
+    c[2] = (a[3] * b[2]) + (a[0] * b[1]) - (a[1] * b[0]) + (a[2] * b[3]);
     c[3] = (a[3] * b[3]) - (a[0] * b[0]) - (a[1] * b[1]) - (a[2] * b[2]);
+    /*
+     * bad math?
+        c[0] = (a[3] * b[0]) + (a[0] * b[3]) - (a[1] * b[2]) + (a[2] * b[1]);
+        c[1] = (a[3] * b[1]) + (a[0] * b[2]) + (a[1] * b[3]) - (a[2] * b[0]);
+        c[2] = (a[3] * b[2]) - (a[0] * b[1]) + (a[1] * b[0]) + (a[2] * b[3]);
+        c[3] = (a[3] * b[3]) - (a[0] * b[0]) - (a[1] * b[1]) - (a[2] * b[2]);
+    */
 }
 
 void quat_rot(float *quat_a, float *quat_p) {
@@ -38,21 +69,51 @@ void orient_vel(struct camera_data *camera, float *velocity) {
     velocity[2] = quat_vel[2];
 }
 
+void quat_norm(float *q) {
+
+    // not sure that's actually needed now, but it's an extra safety to make
+    // sure I'm working with normalized vectors
+    float n = sqrtf(q[0] * q[0] + q[1] * q[1] + q[2] * q[2] + q[3] * q[3]);
+    q[0] /= n;
+    q[1] /= n;
+    q[2] /= n;
+    q[3] /= n;
+}
+
 void calc_camera_rotation(struct camera_data *camera) {
     float pitch = to_rads(camera->camera_rotation_pitch);
     float yaw = to_rads(camera->camera_rotation_yaw);
 
     // avoiding to repeat those operations, though they probably would have been
     // cached
-    float sp = sinf(pitch / 2.0f);
-    float cp = cosf(pitch / 2.0f);
-    float sy = sinf(yaw / 2.0f);
-    float cy = cosf(yaw / 2.0f);
+    float sp2 = sinf(pitch / 2.0f);
+    float cp2 = cosf(pitch / 2.0f);
+    float sy2 = sinf(yaw / 2.0f);
+    float cy2 = cosf(yaw / 2.0f);
 
-    camera->camera_rotation_q[0] = -sp * sy;
-    camera->camera_rotation_q[1] = sp * cy;
-    camera->camera_rotation_q[2] = cp * sy;
-    camera->camera_rotation_q[3] = cp * cy;
+    // axis for pitch is rotated 90° from yaw angle
+    // also it took me way too long to realise that I was calculating my axis
+    // with the sy2 and cy2 values...
+    float sy = sinf(yaw + (M_PI / 2.0f));
+    float cy = cosf(yaw + (M_PI / 2.0f));
+
+    float quat_pitch[4] = {sy * sp2, 0.0f, -cy * sp2, -cp2};
+    float quat_yaw[4] = {0.0f, -1.0f * sy2, 0.0f, cy2};
+    quat_norm(quat_pitch);
+    quat_norm(quat_yaw);
+    quat_mul(quat_pitch, quat_yaw, camera->camera_rotation_q);
+    /*
+     * this math doesn't work, because i'm an idiot
+        camera->camera_rotation_q[0] = sp * sy;
+        camera->camera_rotation_q[1] = cp * sy;
+        camera->camera_rotation_q[2] = sp * cy;
+        camera->camera_rotation_q[3] = cp * cy;
+     * neither does this one
+        camera->camera_rotation_q[0] = -sp * sy;
+        camera->camera_rotation_q[1] = sp * cy;
+        camera->camera_rotation_q[2] = cp * sy;
+        camera->camera_rotation_q[3] = cp * cy;
+    */
 }
 
 float get_interval(struct camera_data *camera) {

@@ -15,8 +15,10 @@ void create_window(GApplication *app) {
     // Allocating memory for data on position of GlContext data
     struct context *context = init_context();
     context->gtk_context->win = win;
-    GtkEventController *controller = new_event_controller(context);
-    gtk_widget_add_controller(win, controller);
+    GtkEventController *k_controller = new_event_controller(context);
+    GtkEventController *m_controller = mouse_event_controller(context);
+    gtk_widget_add_controller(win, k_controller);
+    gtk_widget_add_controller(win, m_controller);
 
     GtkWidget *hpaned = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
     GtkWidget *glarea = setup_glarea(context);

@@ -40,6 +40,7 @@ struct context *init_context() {
     context->gl_context->u_resolution_pos = -2;
     context->gl_context->u_camera_origin_pos = -2;
     context->gl_context->u_camera_rotation_q_pos = -2;
+    gettimeofday(&(context->gl_context->last_update), NULL);
 
     context->camera = malloc(sizeof(struct camera_data));
     if (context->camera == NULL) {
@@ -78,6 +79,7 @@ struct context *init_context() {
     }
     context->gtk_context->win = NULL;
     context->gtk_context->pointer_grabbed = false;
+    context->gtk_context->area = NULL;
 
     return context;
 }

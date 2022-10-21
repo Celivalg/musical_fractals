@@ -9,4 +9,6 @@ void ungrab_mouse(struct context *context);
 
 void warp_mouse(struct context *context);
 
+GtkEventController *mouse_event_controller(struct context *context);
+
 #endif

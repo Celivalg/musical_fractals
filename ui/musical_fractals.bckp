@@ -18,11 +18,15 @@
           </object>
         </child>
         <child>
-          <object class="GtkListBox">
-            <property name="width-request">150</property>
+          <object class="GtkScrolledWindow">
             <child>
-              <object class="GtkButton" id="reload_shaders">
-                <property name="label">Reload Shaders</property>
+              <object class="GtkListBox" id="menu_list">
+                <property name="width-request">150</property>
+                  <child>
+                    <object class="GtkButton" id="reload_shaders">
+                      <property name="label">Reload Shaders</property>
+                    </object>
+                </child>
               </object>
             </child>
           </object>

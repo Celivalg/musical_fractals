@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <!-- interface-name musical_fractals.ui -->
+  <requires lib="gtk" version="4.6"/>
+  <object class="GtkWindow" id="top_window">
+    <property name="default-height">500</property>
+    <property name="default-width">500</property>
+    <property name="name">top_window</property>
+    <property name="title">Musical Fractals</property>
+    <child>
+      <object class="GtkPaned" id="paned_menu">
+        <property name="resize-end-child">False</property>
+        <child>
+          <object class="GtkGLArea" id="gl_area">
+            <property name="width-request">100</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow">
+            <child>
+              <object class="GtkListBox" id="menu_list">
+                <property name="width-request">150</property>
+                <property name="show-separators">True</property>
+                <child>
+                  <object class="GtkButton" id="reload_shaders">
+                    <property name="label">Reload Shaders</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkBox">
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkExpander">
+                        <property name="label">Ray Marching</property>
+                        <child>
+                          <object class="GtkListBox" id="ray_marching">
+                            <property name="show-separators">True</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

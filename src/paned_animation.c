@@ -6,18 +6,19 @@ void move_paned(struct context *context) {
     int size = gtk_paned_get_position(GTK_PANED(data->paned));
     int win_width = gtk_widget_get_width(win);
 
-    const int total_size = 200;
+    const int total_size = 500;
+    const int step = 25;
 
     if (data->is_closing) {
         if (size < win_width) {
-            if (size + 10 >= win_width) {
+            if (size + step >= win_width) {
                 gtk_paned_set_position(GTK_PANED(data->paned), win_width);
                 data->is_closing = false;
                 data->is_open = false;
                 data->is_closed = true;
                 return;
             } else {
-                gtk_paned_set_position(GTK_PANED(data->paned), size + 10);
+                gtk_paned_set_position(GTK_PANED(data->paned), size + step);
                 return;
             }
         } else {
@@ -28,7 +29,7 @@ void move_paned(struct context *context) {
         }
     } else if (data->is_opening) {
         if (size > win_width - total_size) {
-            if (size - 10 <= win_width - total_size) {
+            if (size - step <= win_width - total_size) {
                 gtk_paned_set_position(GTK_PANED(data->paned),
                                        win_width - total_size);
                 data->is_opening = false;
@@ -37,7 +38,7 @@ void move_paned(struct context *context) {
                 return;
 
             } else {
-                gtk_paned_set_position(GTK_PANED(data->paned), size - 10);
+                gtk_paned_set_position(GTK_PANED(data->paned), size - step);
                 return;
             }
         } else {

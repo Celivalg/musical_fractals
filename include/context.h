@@ -45,6 +45,12 @@ struct gtk_context_data {
     struct paned_animation_data anim_data;
 };
 
+struct drawing_data {
+    unsigned int max_step;
+    float max_dist;
+    float surface_tresh;
+};
+
 struct camera_data {
     GLfloat camera_origin[3];
     GLfloat camera_rotation_q[4];
@@ -59,10 +65,14 @@ struct camera_data {
 
 // gl_context not to be mistaken for an actual gl_context, but just for the data
 // I need to run the shaders
+
+// I also need to stop this from using references... gonna be hell to adjust the
+// code everywhere but it needs to be done
 struct context {
     struct gl_context_data *gl_context;
     struct camera_data *camera;
     struct gtk_context_data *gtk_context;
+    struct drawing_data drawing;
 };
 
 void free_context(struct context *context);

@@ -68,9 +68,12 @@ static gboolean render(__attribute__((unused)) GtkGLArea *area,
         glUniform4fv(context->gl_context->u_camera_rotation_q_pos, 1,
                      context->camera->camera_rotation_q);
 
-        glUniform1ui(context->gl_context->u_max_steps_pos, 100);
-        glUniform1f(context->gl_context->u_max_dist_pos, 1000.f);
-        glUniform1f(context->gl_context->u_surface_tresh_pos, 0.01f);
+        glUniform1ui(context->gl_context->u_max_steps_pos,
+                     context->drawing.max_step);
+        glUniform1f(context->gl_context->u_max_dist_pos,
+                    context->drawing.max_dist);
+        glUniform1f(context->gl_context->u_surface_tresh_pos,
+                    context->drawing.surface_tresh);
 
         glDrawArrays(GL_TRIANGLES, 0, 6);
 

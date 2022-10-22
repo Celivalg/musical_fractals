@@ -26,6 +26,10 @@ struct context *init_context() {
         return NULL;
     }
 
+    context->drawing.max_dist = 1000.f;
+    context->drawing.surface_tresh = 0.01f;
+    context->drawing.max_step = 100;
+
     context->gl_context = malloc(sizeof(struct gl_context_data));
     if (context->gl_context == NULL) {
         printf("init_context: Failed to allocate context->gl_context "

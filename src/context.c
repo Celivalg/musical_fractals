@@ -80,6 +80,11 @@ struct context *init_context() {
     context->gtk_context->win = NULL;
     context->gtk_context->pointer_grabbed = false;
     context->gtk_context->area = NULL;
+    context->gtk_context->anim_data.paned = NULL;
+    context->gtk_context->anim_data.is_opening = false;
+    context->gtk_context->anim_data.is_closing = false;
+    context->gtk_context->anim_data.is_closed = false;
+    context->gtk_context->anim_data.is_open = true;
 
     return context;
 }

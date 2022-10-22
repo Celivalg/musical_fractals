@@ -24,10 +24,20 @@ struct gl_context_data {
     struct timeval last_update;
 };
 
+// could have been done with 3 states but cleaner this way
+struct paned_animation_data {
+    bool is_closed;
+    bool is_open;
+    bool is_closing;
+    bool is_opening;
+    GtkWidget *paned;
+};
+
 struct gtk_context_data {
     bool pointer_grabbed;
     GtkGLArea *area;
     GtkWidget *win;
+    struct paned_animation_data anim_data;
 };
 
 struct camera_data {

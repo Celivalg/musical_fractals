@@ -1,5 +1,6 @@
 #include "key_events.h"
 #include "mouse_input.h"
+#include "paned_animation.h"
 #include <stdio.h>
 
 gboolean key_pressed_handler(__attribute__((unused)) GtkEventController *self,
@@ -45,8 +46,10 @@ gboolean key_pressed_handler(__attribute__((unused)) GtkEventController *self,
             key_forward(context, d_forward, false);
             key_forward(context, d_backward, false);
             ungrab_mouse(context);
+            open_paned(context);
         } else {
             grab_mouse(context);
+            close_paned(context);
         }
         break;
     default:

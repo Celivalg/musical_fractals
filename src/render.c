@@ -3,6 +3,7 @@
 #include "gl_create_program.h"
 #include "gl_init_buffers.h"
 #include "mouse_input.h"
+#include "paned_animation.h"
 #include <stdlib.h>
 /*
  *this doesn't work
@@ -33,7 +34,7 @@ static void force_redraw(struct context *context) {
     gtk_widget_queue_draw(GTK_WIDGET(context->gtk_context->area));
 }
 
-static gboolean render(GtkGLArea *area,
+static gboolean render(__attribute__((unused)) GtkGLArea *area,
                        __attribute__((unused)) GdkGLContext *GLcontext,
                        struct context *context) {
     gettimeofday(&(context->gl_context->last_update), NULL);
@@ -41,6 +42,8 @@ static gboolean render(GtkGLArea *area,
     // GdkGLContext has been made current to the drawable
     // surface used by the `GtkGLArea` and the viewport has
     // already been set to be the size of the allocation
+    //
+    move_paned(context);
 
     calc_camera(context);
     // we can start by clearing the buffer
@@ -52,9 +55,11 @@ static gboolean render(GtkGLArea *area,
         glUseProgram(context->gl_context->program);
         glBindVertexArray(context->gl_context->VAO);
 
-        glUniform2f(context->gl_context->u_resolution_pos,
-                    (float)gtk_widget_get_width(GTK_WIDGET(area)),
-                    (float)gtk_widget_get_height(GTK_WIDGET(area)));
+        glUniform2f(
+            context->gl_context->u_resolution_pos,
+            (float)gtk_widget_get_width(GTK_WIDGET(context->gtk_context->win)),
+            (float)gtk_widget_get_height(
+                GTK_WIDGET(context->gtk_context->win)));
 
         glUniform3fv(context->gl_context->u_camera_origin_pos, 1,
                      context->camera->camera_origin);

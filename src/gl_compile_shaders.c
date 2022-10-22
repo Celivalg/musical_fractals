@@ -61,7 +61,8 @@ GLuint load_shader(const char *shader_file_path, GLenum shader_type) {
 
     char **shader_source = load_source_from_file(shader_file_path);
     if (!shader_source) {
-        printf("load_shader: Couldn't load source from file\n");
+        printf("load_shader: Couldn't load source from file %s\n",
+               shader_file_path);
         glDeleteShader(shader);
         return 0;
     }

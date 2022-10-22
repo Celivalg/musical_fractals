@@ -22,6 +22,9 @@ struct gl_context_data {
     GLint u_camera_origin_pos;
     GLint u_camera_rotation_q_pos;
     struct timeval last_update;
+    bool shader_update;
+    char *vertex_source;
+    char *fragment_source;
 };
 
 // could have been done with 3 states but cleaner this way

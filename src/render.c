@@ -2,6 +2,7 @@
 #include "camera.h"
 #include "gl_create_program.h"
 #include "gl_init_buffers.h"
+#include "gl_load_shaders.h"
 #include "mouse_input.h"
 #include "paned_animation.h"
 #include <stdlib.h>
@@ -43,6 +44,7 @@ static gboolean render(__attribute__((unused)) GtkGLArea *area,
     // surface used by the `GtkGLArea` and the viewport has
     // already been set to be the size of the allocation
     //
+    load_shaders(context);
     move_paned(context);
 
     calc_camera(context);
@@ -143,6 +145,6 @@ void setup_glarea(struct context *context) {
                      context);
     g_signal_connect(context->gtk_context->area, "realize",
                      G_CALLBACK(on_realize), context);
-    g_timeout_add(1000 / 60, G_SOURCE_FUNC(force_redraw), context);
+    // g_timeout_add(1000 / 60, G_SOURCE_FUNC(force_redraw), context);
 }
 

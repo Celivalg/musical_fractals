@@ -24,12 +24,15 @@ void _log_program(GLuint program) {
 GLuint create_program(const char *vertex_file, const char *fragment_file) {
     GLuint vertex_shader = load_shader(vertex_file, GL_VERTEX_SHADER);
     if (!vertex_shader) {
-        printf("create_program: Failed to compile vertex shader\n");
+        printf("create_program: Failed to compile vertex shader from file %s\n",
+               vertex_file);
         return 0;
     }
     GLuint fragment_shader = load_shader(fragment_file, GL_FRAGMENT_SHADER);
     if (!fragment_shader) {
-        printf("create_program: Failed to compile fragment shader\n");
+        printf(
+            "create_program: Failed to compile fragment shader from file %s\n",
+            fragment_file);
         glDeleteShader(vertex_shader);
         return 0;
     }

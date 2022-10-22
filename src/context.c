@@ -19,6 +19,7 @@ void free_context(struct context *context) {
 
 // don't touch until you have read the comments in free_context
 struct context *init_context() {
+    printf("initializing context...\n");
     struct context *context = malloc(sizeof(struct context));
     if (context == NULL) {
         printf("init_context: Failed to allocate context memory\n");
@@ -41,6 +42,9 @@ struct context *init_context() {
     context->gl_context->u_camera_origin_pos = -2;
     context->gl_context->u_camera_rotation_q_pos = -2;
     gettimeofday(&(context->gl_context->last_update), NULL);
+    context->gl_context->fragment_source = "./glsl/fragment.glsl";
+    context->gl_context->vertex_source = "./glsl/vertex.glsl";
+    context->gl_context->shader_update = false;
 
     context->camera = malloc(sizeof(struct camera_data));
     if (context->camera == NULL) {

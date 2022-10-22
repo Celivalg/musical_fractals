@@ -1,5 +1,6 @@
 #include "gui.h"
 #include "context.h"
+#include "gl_load_shaders.h"
 #include "key_events.h"
 #include "mouse_input.h"
 #include "render.h"
@@ -30,6 +31,11 @@ void create_window(GApplication *app, struct context *context) {
     GtkWidget *paned =
         GTK_WIDGET(gtk_builder_get_object(builder, "paned_menu"));
     context->gtk_context->anim_data.paned = paned;
+
+    GtkWidget *reload_shaders_b =
+        GTK_WIDGET(gtk_builder_get_object(builder, "reload_shaders"));
+    g_signal_connect(reload_shaders_b, "clicked",
+                     G_CALLBACK(load_default_shaders), context);
 
     gtk_widget_show(GTK_WIDGET(win));
 }

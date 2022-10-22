@@ -11,7 +11,7 @@
     <child>
       <object class="GtkPaned" id="paned_menu">
         <property name="resize-end-child">False</property>
-        <property name="shrink-end-child">False</property>
+        <property name="shrink-start-child">False</property>
         <child>
           <object class="GtkGLArea" id="gl_area">
             <property name="width-request">300</property>
@@ -19,9 +19,9 @@
         </child>
         <child>
           <object class="GtkListBox">
-            <property name="width-request">100</property>
+            <property name="width-request">150</property>
             <child>
-              <object class="GtkButton">
+              <object class="GtkButton" id="reload_shaders">
                 <property name="label">Reload Shaders</property>
               </object>
             </child>

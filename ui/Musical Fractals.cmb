@@ -9,7 +9,7 @@
 	(1,2,"GtkPaned","paned_menu",1,None,None,None,-1),
 	(1,3,"GtkListBox",None,2,None,None,None,1),
 	(1,4,"GtkGLArea","gl_area",2,None,None,None,None),
-	(1,5,"GtkButton",None,3,None,None,None,None)
+	(1,5,"GtkButton","reload_shaders",3,None,None,None,None)
   </object>
   <object_property>
 	(1,1,"GtkWidget","name","top_window",None,None,None,None,None),
@@ -17,8 +17,8 @@
 	(1,1,"GtkWindow","default-width","500",None,None,None,None,None),
 	(1,1,"GtkWindow","title","Musical Fractals",None,None,None,None,None),
 	(1,2,"GtkPaned","resize-end-child","False",None,None,None,None,None),
-	(1,2,"GtkPaned","shrink-end-child","False",None,None,None,None,None),
-	(1,3,"GtkWidget","width-request","100",None,None,None,None,None),
+	(1,2,"GtkPaned","shrink-start-child","False",None,None,None,None,None),
+	(1,3,"GtkWidget","width-request","150",None,None,None,None,None),
 	(1,4,"GtkWidget","width-request","300",None,None,None,None,None),
 	(1,5,"GtkButton","label","Reload Shaders",None,None,None,None,None)
   </object_property>

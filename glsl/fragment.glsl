@@ -6,19 +6,20 @@ uniform vec2 u_resolution;
 uniform vec3 u_camera_origin;
 // Camera rotation as a quaternion
 uniform vec4 u_camera_rotation_q;
+// steps 
+uniform uint u_max_steps;
+uniform float u_max_dist;
+uniform float u_surface_tresh;
+
 out vec4 frag_color;
 // maybe needs a layout (location = 0)  
 
-#define MAX_STEPS 100
-#define MAX_DIST 1000.
-#define SURFACE_TRESH .01
-
 float sphere_dist(vec3 point)
 {
-    float repetition = 5;
+    float repetition = 1;
     float sphere_radius = 0.25;
     vec3 sphere_pos = vec3(repetition / 2);
-    sphere_radius *= (repetition / 2);
+    //sphere_radius *= (repetition / 2);
     return distance(mod(point, repetition), sphere_pos) - sphere_radius;
 }
 
@@ -30,22 +31,22 @@ vec3 ray_march(vec3 point, vec3 direction)
 {
     float origin_distance = 0;
     int ray_step = 0;
-    for(; ray_step < MAX_STEPS; ray_step++)
+    for(; ray_step < u_max_steps; ray_step++)
     {
         float surface_distance = dist(point);
         origin_distance += surface_distance;
         point += direction * surface_distance;
 
-        if (origin_distance > MAX_DIST ||
-                surface_distance < SURFACE_TRESH)
+        if (origin_distance > u_max_dist ||
+                surface_distance < u_surface_tresh)
             break;
     }
     
-    if (ray_step == MAX_STEPS || origin_distance > MAX_DIST)
+    if (ray_step == u_max_steps || origin_distance > u_max_dist)
         return vec3(0., 0., 0.);
 
 
-    return vec3(1. - (ray_step / float(MAX_STEPS)));
+    return vec3(1. - (ray_step / float(u_max_steps)), 1. - (ray_step / float(u_max_steps)), 1. - (ray_step / float(u_max_steps)));
 
 }
 

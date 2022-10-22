@@ -4,9 +4,9 @@
 #include <stdbool.h>
 
 bool load_shaders(struct context *context) {
-    if (context->gl_context->shader_update == false) {
-        return true;
-    }
+    // if (context->gl_context->shader_update == false) {
+    //     return true;
+    // }
 
     GLuint program = create_program(context->gl_context->vertex_source,
                                     context->gl_context->fragment_source);
@@ -14,7 +14,6 @@ bool load_shaders(struct context *context) {
         printf("load_shaders: failed to load program with files %s, %s\n",
                context->gl_context->vertex_source,
                context->gl_context->fragment_source);
-        context->gl_context->shader_update = false;
         return false;
     }
     GLuint old_program = context->gl_context->program;
@@ -28,11 +27,17 @@ bool load_shaders(struct context *context) {
         glGetUniformLocation(context->gl_context->program, "u_camera_origin");
     context->gl_context->u_camera_rotation_q_pos = glGetUniformLocation(
         context->gl_context->program, "u_camera_rotation_q");
-    context->gl_context->shader_update = false;
+    context->gl_context->u_max_steps_pos =
+        glGetUniformLocation(context->gl_context->program, "u_max_steps");
+    context->gl_context->u_max_dist_pos =
+        glGetUniformLocation(context->gl_context->program, "u_max_dist");
+    context->gl_context->u_surface_tresh_pos =
+        glGetUniformLocation(context->gl_context->program, "u_surface_tresh");
+
     return true;
 }
 
 void load_default_shaders(__attribute__((unused)) GtkButton *self,
                           struct context *context) {
-    context->gl_context->shader_update = true;
+    load_shaders(context);
 }

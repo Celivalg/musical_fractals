@@ -41,10 +41,12 @@ struct context *init_context() {
     context->gl_context->u_resolution_pos = -2;
     context->gl_context->u_camera_origin_pos = -2;
     context->gl_context->u_camera_rotation_q_pos = -2;
+    context->gl_context->u_max_steps_pos = -2;
+    context->gl_context->u_max_dist_pos = -2;
+    context->gl_context->u_surface_tresh_pos = -2;
     gettimeofday(&(context->gl_context->last_update), NULL);
     context->gl_context->fragment_source = "./glsl/fragment.glsl";
     context->gl_context->vertex_source = "./glsl/vertex.glsl";
-    context->gl_context->shader_update = false;
 
     context->camera = malloc(sizeof(struct camera_data));
     if (context->camera == NULL) {

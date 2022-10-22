@@ -43,8 +43,7 @@ static gboolean render(__attribute__((unused)) GtkGLArea *area,
     // GdkGLContext has been made current to the drawable
     // surface used by the `GtkGLArea` and the viewport has
     // already been set to be the size of the allocation
-    //
-    load_shaders(context);
+
     move_paned(context);
 
     calc_camera(context);
@@ -68,6 +67,10 @@ static gboolean render(__attribute__((unused)) GtkGLArea *area,
 
         glUniform4fv(context->gl_context->u_camera_rotation_q_pos, 1,
                      context->camera->camera_rotation_q);
+
+        glUniform1ui(context->gl_context->u_max_steps_pos, 100);
+        glUniform1f(context->gl_context->u_max_dist_pos, 1000.f);
+        glUniform1f(context->gl_context->u_surface_tresh_pos, 0.01f);
 
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
@@ -121,20 +124,10 @@ static void on_realize(GtkGLArea *area, struct context *context) {
         return;
     }
 
-    context->gl_context->program =
-        create_program("./glsl/vertex.glsl", "./glsl/fragment.glsl");
-    if (context->gl_context->program == 0) {
-        printf("on_realize: Failed to create program\n");
+    if (!load_shaders(context)) {
+        printf("on_realize: Failed to load shaders\n");
         return;
     }
-    glUseProgram(context->gl_context->program);
-
-    context->gl_context->u_resolution_pos =
-        glGetUniformLocation(context->gl_context->program, "u_resolution");
-    context->gl_context->u_camera_origin_pos =
-        glGetUniformLocation(context->gl_context->program, "u_camera_origin");
-    context->gl_context->u_camera_rotation_q_pos = glGetUniformLocation(
-        context->gl_context->program, "u_camera_rotation_q");
 }
 
 void setup_glarea(struct context *context) {

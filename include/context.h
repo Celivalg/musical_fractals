@@ -21,8 +21,10 @@ struct gl_context_data {
     GLint u_resolution_pos;
     GLint u_camera_origin_pos;
     GLint u_camera_rotation_q_pos;
+    GLint u_max_steps_pos;
+    GLint u_max_dist_pos;
+    GLint u_surface_tresh_pos;
     struct timeval last_update;
-    bool shader_update;
     char *vertex_source;
     char *fragment_source;
 };

@@ -8,8 +8,8 @@ GtkWidget *create_label_box(GtkWidget *widget, const char *label_str) {
     return box;
 }
 
-void create_new_scale(GtkBuilder *builder, struct scale_builder scale,
-                      struct context *context) {
+GtkRange *create_new_scale(GtkBuilder *builder, struct scale_builder scale,
+                           struct context *context) {
     GtkListBox *menu =
         GTK_LIST_BOX(gtk_builder_get_object(builder, scale.menu_id));
     GtkWidget *scale_w = gtk_scale_new_with_range(
@@ -23,4 +23,6 @@ void create_new_scale(GtkBuilder *builder, struct scale_builder scale,
 
     GtkWidget *labeled = create_label_box(scale_w, scale.label);
     gtk_list_box_append(menu, labeled);
+
+    return GTK_RANGE(scale_w);
 }

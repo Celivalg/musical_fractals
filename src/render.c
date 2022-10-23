@@ -74,6 +74,8 @@ static gboolean render(__attribute__((unused)) GtkGLArea *area,
                     context->drawing.max_dist);
         glUniform1f(context->gl_context->u_surface_tresh_pos,
                     context->drawing.surface_tresh);
+        glUniform3fv(context->gl_context->u_de_vec_pos, 1,
+                     context->drawing.vec);
 
         glDrawArrays(GL_TRIANGLES, 0, 6);
 

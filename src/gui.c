@@ -15,6 +15,9 @@ void add_scale_camera_speed(GtkBuilder *builder, struct context *context);
 void add_scale_camera_accel(GtkBuilder *builder, struct context *context);
 void add_scale_camera_decel(GtkBuilder *builder, struct context *context);
 void add_scale_camera_sensitivity(GtkBuilder *builder, struct context *context);
+void add_scale_de_x(GtkBuilder *builder, struct context *context);
+void add_scale_de_y(GtkBuilder *builder, struct context *context);
+void add_scale_de_z(GtkBuilder *builder, struct context *context);
 
 void create_window(GApplication *app, struct context *context) {
     // honestly, I should check for if we managed to get the other widgets, but
@@ -55,6 +58,9 @@ void create_window(GApplication *app, struct context *context) {
     add_scale_camera_accel(builder, context);
     add_scale_camera_decel(builder, context);
     add_scale_camera_sensitivity(builder, context);
+    add_scale_de_x(builder, context);
+    add_scale_de_y(builder, context);
+    add_scale_de_z(builder, context);
 
     gtk_widget_show(GTK_WIDGET(win));
 }
@@ -179,3 +185,81 @@ void add_scale_camera_sensitivity(GtkBuilder *builder,
                                   .label = "Camera Sensitivity"};
     create_new_scale(builder, scale, context);
 }
+
+// Utility
+void normalize(float *vec) {
+    float l = sqrtf(vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]);
+    vec[0] /= l;
+    vec[1] /= l;
+    vec[2] /= l;
+}
+
+// -- Distance estimator X scale -- //
+void update_de_x(GtkRange *self, struct context *context) {
+    double v = gtk_range_get_value(self);
+    if ((float)v == context->drawing.vec[0])
+        return;
+    context->drawing.vec[0] = (float)(v);
+    normalize(context->drawing.vec);
+    gtk_range_set_value(self, context->drawing.vec[0]);
+    gtk_range_set_value(context->gtk_context->vec_y, context->drawing.vec[1]);
+    gtk_range_set_value(context->gtk_context->vec_z, context->drawing.vec[2]);
+}
+
+void add_scale_de_x(GtkBuilder *builder, struct context *context) {
+    struct scale_builder scale = {.menu_id = "distance_estimator",
+                                  .callback = G_CALLBACK(update_de_x),
+                                  .min = 0.0,
+                                  .max = 1.0,
+                                  .step = 0.001,
+                                  .initial = 0.5,
+                                  .label = "X Component"};
+    context->gtk_context->vec_x = create_new_scale(builder, scale, context);
+}
+
+// -- Distance estimator Y scale -- //
+void update_de_y(GtkRange *self, struct context *context) {
+    double v = gtk_range_get_value(self);
+    if ((float)v == context->drawing.vec[1])
+        return;
+    context->drawing.vec[1] = (float)(v);
+    normalize(context->drawing.vec);
+    gtk_range_set_value(context->gtk_context->vec_x, context->drawing.vec[0]);
+    gtk_range_set_value(self, context->drawing.vec[1]);
+    gtk_range_set_value(context->gtk_context->vec_z, context->drawing.vec[2]);
+}
+
+void add_scale_de_y(GtkBuilder *builder, struct context *context) {
+    struct scale_builder scale = {.menu_id = "distance_estimator",
+                                  .callback = G_CALLBACK(update_de_y),
+                                  .min = 0.0,
+                                  .max = 1.0,
+                                  .step = 0.001,
+                                  .initial = 0.5,
+                                  .label = "Y Component"};
+    context->gtk_context->vec_y = create_new_scale(builder, scale, context);
+}
+
+// -- Distance estimator Z scale -- //
+void update_de_z(GtkRange *self, struct context *context) {
+    double v = gtk_range_get_value(self);
+    if ((float)v == context->drawing.vec[2])
+        return;
+    context->drawing.vec[2] = (float)(v);
+    normalize(context->drawing.vec);
+    gtk_range_set_value(context->gtk_context->vec_x, context->drawing.vec[0]);
+    gtk_range_set_value(context->gtk_context->vec_y, context->drawing.vec[1]);
+    gtk_range_set_value(self, context->drawing.vec[2]);
+}
+
+void add_scale_de_z(GtkBuilder *builder, struct context *context) {
+    struct scale_builder scale = {.menu_id = "distance_estimator",
+                                  .callback = G_CALLBACK(update_de_z),
+                                  .min = 0.0,
+                                  .max = 1.0,
+                                  .step = 0.001,
+                                  .initial = 0.5,
+                                  .label = "Z Component"};
+    context->gtk_context->vec_z = create_new_scale(builder, scale, context);
+}
+

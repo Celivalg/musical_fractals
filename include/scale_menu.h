@@ -14,7 +14,7 @@ struct scale_builder {
     const char *label;
 };
 
-void create_new_scale(GtkBuilder *builder, struct scale_builder scale,
-                      struct context *context);
+GtkRange *create_new_scale(GtkBuilder *builder, struct scale_builder scale,
+                           struct context *context);
 
 #endif

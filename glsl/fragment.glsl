@@ -11,6 +11,9 @@ uniform uint u_max_steps;
 uniform float u_max_dist;
 uniform float u_surface_tresh;
 
+// DE data
+uniform vec3 u_de_vec;
+
 #define PI 3.1415926538
 
 
@@ -96,7 +99,7 @@ float triangle_dist_2(vec3 z)
 float cube_1(vec3 p){
     p /= 2.0;
     float scale = 2.0;
-    vec3 C = normalize(vec3(0.5, .2, .5));
+    //vec3 C = normalize(vec3(0.5, .2, .5));
     int i;
 
     float r = p.x * p.x + p.y * p.y + p.z * p.z;
@@ -116,7 +119,7 @@ float cube_1(vec3 p){
 
         //point_rot(p, normalize(vec3(0.0, 1., 0.)), PI/2);
 
-        p = scale * p - C * (scale - 1);
+        p = scale * p - u_de_vec * (scale - 1);
         r= p.x * p.x + p.y * p.y + p.z * p.z;
     }
     return (sqrt(r) - 2) * pow(scale, -i);//the estimated distance

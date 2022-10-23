@@ -24,6 +24,7 @@ struct gl_context_data {
     GLint u_max_steps_pos;
     GLint u_max_dist_pos;
     GLint u_surface_tresh_pos;
+    GLint u_de_vec_pos;
     struct timeval last_update;
     char *vertex_source;
     char *fragment_source;
@@ -43,12 +44,18 @@ struct gtk_context_data {
     GtkGLArea *area;
     GtkWidget *win;
     struct paned_animation_data anim_data;
+
+    GtkRange *vec_x;
+    GtkRange *vec_y;
+    GtkRange *vec_z;
 };
 
 struct drawing_data {
     unsigned int max_step;
     float max_dist;
     float surface_tresh;
+
+    float vec[3];
 };
 
 struct camera_data {

@@ -29,6 +29,9 @@ struct context *init_context() {
     context->drawing.max_dist = 1000.f;
     context->drawing.surface_tresh = 0.01f;
     context->drawing.max_step = 100;
+    context->drawing.vec[0] = 0.0f;
+    context->drawing.vec[1] = 0.0f;
+    context->drawing.vec[2] = 0.0f;
 
     context->gl_context = malloc(sizeof(struct gl_context_data));
     if (context->gl_context == NULL) {
@@ -48,6 +51,7 @@ struct context *init_context() {
     context->gl_context->u_max_steps_pos = -2;
     context->gl_context->u_max_dist_pos = -2;
     context->gl_context->u_surface_tresh_pos = -2;
+    context->gl_context->u_de_vec_pos = -2;
     gettimeofday(&(context->gl_context->last_update), NULL);
     context->gl_context->fragment_source = "./glsl/fragment.glsl";
     context->gl_context->vertex_source = "./glsl/vertex.glsl";
@@ -100,6 +104,9 @@ struct context *init_context() {
     context->gtk_context->anim_data.is_closing = false;
     context->gtk_context->anim_data.is_closed = false;
     context->gtk_context->anim_data.is_open = true;
+    context->gtk_context->vec_x = NULL;
+    context->gtk_context->vec_y = NULL;
+    context->gtk_context->vec_z = NULL;
 
     return context;
 }

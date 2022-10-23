@@ -33,6 +33,8 @@ bool load_shaders(struct context *context) {
         glGetUniformLocation(context->gl_context->program, "u_max_dist");
     context->gl_context->u_surface_tresh_pos =
         glGetUniformLocation(context->gl_context->program, "u_surface_tresh");
+    context->gl_context->u_de_vec_pos =
+        glGetUniformLocation(context->gl_context->program, "u_de_vec");
 
     return true;
 }

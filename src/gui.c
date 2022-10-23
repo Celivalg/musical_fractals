@@ -11,6 +11,10 @@
 void add_scale_max_step(GtkBuilder *builder, struct context *context);
 void add_scale_max_dist(GtkBuilder *builder, struct context *context);
 void add_scale_surface_tresh(GtkBuilder *builder, struct context *context);
+void add_scale_camera_speed(GtkBuilder *builder, struct context *context);
+void add_scale_camera_accel(GtkBuilder *builder, struct context *context);
+void add_scale_camera_decel(GtkBuilder *builder, struct context *context);
+void add_scale_camera_sensitivity(GtkBuilder *builder, struct context *context);
 
 void create_window(GApplication *app, struct context *context) {
     // honestly, I should check for if we managed to get the other widgets, but
@@ -47,6 +51,10 @@ void create_window(GApplication *app, struct context *context) {
     add_scale_max_step(builder, context);
     add_scale_max_dist(builder, context);
     add_scale_surface_tresh(builder, context);
+    add_scale_camera_speed(builder, context);
+    add_scale_camera_accel(builder, context);
+    add_scale_camera_decel(builder, context);
+    add_scale_camera_sensitivity(builder, context);
 
     gtk_widget_show(GTK_WIDGET(win));
 }
@@ -99,5 +107,75 @@ void add_scale_surface_tresh(GtkBuilder *builder, struct context *context) {
                                   .step = 0.01,
                                   .initial = 2.0,
                                   .label = "Surface Treshold"};
+    create_new_scale(builder, scale, context);
+}
+
+// -- camera_speed scale -- //
+void update_camera_speed(GtkRange *self, struct context *context) {
+    double v = gtk_range_get_value(self);
+    context->camera->camera_speed = (float)pow(10.0, v / 10.);
+}
+
+void add_scale_camera_speed(GtkBuilder *builder, struct context *context) {
+    struct scale_builder scale = {.menu_id = "camera",
+                                  .callback = G_CALLBACK(update_camera_speed),
+                                  .min = 0.0,
+                                  .max = 10.0,
+                                  .step = 0.01,
+                                  .initial = 5.,
+                                  .label = "Camera Speed"};
+    create_new_scale(builder, scale, context);
+}
+
+// -- camera_accel scale -- //
+void update_camera_accel(GtkRange *self, struct context *context) {
+    double v = gtk_range_get_value(self);
+    context->camera->camera_accel = (float)(v);
+}
+
+void add_scale_camera_accel(GtkBuilder *builder, struct context *context) {
+    struct scale_builder scale = {.menu_id = "camera",
+                                  .callback = G_CALLBACK(update_camera_accel),
+                                  .min = 0.0,
+                                  .max = 10.0,
+                                  .step = 0.01,
+                                  .initial = 3.0,
+                                  .label = "Camera Acceleration"};
+    create_new_scale(builder, scale, context);
+}
+
+// -- camera_decel scale -- //
+void update_camera_decel(GtkRange *self, struct context *context) {
+    double v = gtk_range_get_value(self);
+    context->camera->camera_decel = (float)(v);
+}
+
+void add_scale_camera_decel(GtkBuilder *builder, struct context *context) {
+    struct scale_builder scale = {.menu_id = "camera",
+                                  .callback = G_CALLBACK(update_camera_decel),
+                                  .min = 0.0,
+                                  .max = 10.0,
+                                  .step = 0.01,
+                                  .initial = 1.0,
+                                  .label = "Camera Deceleration"};
+    create_new_scale(builder, scale, context);
+}
+
+// -- camera_sensitivity scale -- //
+void update_camera_sensitivity(GtkRange *self, struct context *context) {
+    double v = gtk_range_get_value(self);
+    context->camera->camera_sensitivity = (float)(v);
+}
+
+void add_scale_camera_sensitivity(GtkBuilder *builder,
+                                  struct context *context) {
+    struct scale_builder scale = {.menu_id = "camera",
+                                  .callback =
+                                      G_CALLBACK(update_camera_sensitivity),
+                                  .min = 0.0,
+                                  .max = 10.0,
+                                  .step = 0.01,
+                                  .initial = 1.0,
+                                  .label = "Camera Sensitivity"};
     create_new_scale(builder, scale, context);
 }

@@ -27,16 +27,31 @@
                   </object>
                 </child>
                 <child>
-                  <object class="GtkBox">
-                    <property name="orientation">vertical</property>
+                  <object class="GtkExpander">
+                    <property name="label">Ray Marching</property>
                     <child>
-                      <object class="GtkExpander">
-                        <property name="label">Ray Marching</property>
-                        <child>
-                          <object class="GtkListBox" id="ray_marching">
-                            <property name="show-separators">True</property>
-                          </object>
-                        </child>
+                      <object class="GtkListBox" id="ray_marching">
+                        <property name="show-separators">True</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkExpander">
+                    <property name="label">Distance Estimator</property>
+                    <child>
+                      <object class="GtkListBox" id="distance_estimator">
+                        <property name="show-separators">True</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkExpander">
+                    <property name="label">Camera</property>
+                    <child>
+                      <object class="GtkListBox" id="camera">
+                        <property name="show-separators">True</property>
                       </object>
                     </child>
                   </object>

@@ -8,13 +8,12 @@
 // This is getting quite ugly
 
 void mouse_to_angle(struct context *context, float x, float y) {
-    float sensitivity = 1.0f;
     float revolution = 4000.0f;
 
-    float new_pitch =
-        (y * sensitivity) / revolution + context->camera->camera_rotation_pitch;
-    float new_yaw =
-        (x * sensitivity) / revolution + context->camera->camera_rotation_yaw;
+    float new_pitch = (y * context->camera->camera_sensitivity) / revolution +
+                      context->camera->camera_rotation_pitch;
+    float new_yaw = (x * context->camera->camera_sensitivity) / revolution +
+                    context->camera->camera_rotation_yaw;
 
     if (new_pitch > 0.5f)
         new_pitch = 0.5f;
@@ -140,36 +139,33 @@ float get_interval(struct camera_data *camera) {
 }
 
 void calc_camera_velocity(struct camera_data *camera, float interval) {
-    float accel = 3.0f;
-    float decel = 1.f;
-    float max_speed = 5.0f;
 
     float vel_comp[3];
-    vel_comp[2] = accel * interval *
+    vel_comp[2] = camera->camera_accel * interval *
                   (((int)camera->pressed[d_forward]) -
                    ((int)camera->pressed[d_backward]));
     vel_comp[1] =
-        accel * interval *
+        camera->camera_accel * interval *
         (((int)camera->pressed[d_up]) - ((int)camera->pressed[d_down]));
     vel_comp[0] =
-        accel * interval *
+        camera->camera_accel * interval *
         (((int)camera->pressed[d_right]) - ((int)camera->pressed[d_left]));
     orient_vel(camera, vel_comp);
 
     camera->camera_vel[0] +=
-        vel_comp[0] - camera->camera_vel[0] * decel * interval;
+        vel_comp[0] - camera->camera_vel[0] * camera->camera_decel * interval;
     camera->camera_vel[1] +=
-        vel_comp[1] - camera->camera_vel[1] * decel * interval;
+        vel_comp[1] - camera->camera_vel[1] * camera->camera_decel * interval;
     camera->camera_vel[2] +=
-        vel_comp[2] - camera->camera_vel[2] * decel * interval;
+        vel_comp[2] - camera->camera_vel[2] * camera->camera_decel * interval;
 
     float l = sqrtf(camera->camera_vel[0] * camera->camera_vel[0] +
                     camera->camera_vel[1] * camera->camera_vel[1] +
                     camera->camera_vel[2] * camera->camera_vel[2]);
-    if (l > max_speed) {
-        camera->camera_vel[0] *= max_speed / l;
-        camera->camera_vel[1] *= max_speed / l;
-        camera->camera_vel[2] *= max_speed / l;
+    if (l > camera->camera_speed) {
+        camera->camera_vel[0] *= camera->camera_speed / l;
+        camera->camera_vel[1] *= camera->camera_speed / l;
+        camera->camera_vel[2] *= camera->camera_speed / l;
     }
 }
 

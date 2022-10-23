@@ -80,6 +80,11 @@ struct context *init_context() {
     context->camera->camera_rotation_pitch = 0.0;
     context->camera->camera_rotation_yaw = 0.0;
 
+    context->camera->camera_speed = 5.0f;
+    context->camera->camera_accel = 3.0f;
+    context->camera->camera_decel = 1.0f;
+    context->camera->camera_sensitivity = 1.0f;
+
     context->gtk_context = malloc(sizeof(struct gtk_context_data));
     if (context->gtk_context == NULL) {
         printf(

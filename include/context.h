@@ -61,6 +61,11 @@ struct camera_data {
 
     struct timeval last_update;
     bool pressed[6];
+
+    float camera_speed;
+    float camera_accel;
+    float camera_decel;
+    float camera_sensitivity;
 };
 
 // gl_context not to be mistaken for an actual gl_context, but just for the data
